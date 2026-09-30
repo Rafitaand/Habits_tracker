@@ -38,7 +38,7 @@ Camada que concentra as regras de negócio da aplicação, atuando como intermed
 
 Camada responsável por expor os endpoints REST e lidar com as requisições HTTP, implementando o CRUD completo (criação, leitura, atualização e remoção) para cada entidade. Recebe os dados da requisição, repassa ao Service para processamento e devolve a resposta ao cliente, com o código de status HTTP apropriado. Erros lançados pelo Service são interceptados pela camada de exceções (GlobalExceptionHandler), que os converte em respostas padronizadas (como 404 e 409), sem expor detalhes internos do sistema.
 
-## EndPoints da API
+## Endpoints da API
 
 ### Habit
 
@@ -74,3 +74,31 @@ Camada responsável por expor os endpoints REST e lidar com as requisições HTT
 3. Copie o arquivo `application.properties.example` (em `src/main/resources`) e renomeie a cópia para `application.properties`
 4. No novo arquivo, ajuste usuário e senha de acordo com sua configuração local do PostgreSQL
 5. Execute o projeto com `./mvnw spring-boot:run`
+
+
+## Testes
+
+### Criando um hábito
+
+![Requisição - criar hábito](docs/post-habit-request.png.png)
+![Resposta - hábito criado](docs/post-habit-response.png.png)
+
+### Listando hábitos
+
+![Lista de hábitos](docs/get-habits.png.png)
+
+### Buscando um hábito específico
+
+![Busca por id](docs/get-habits_id.png.png)
+
+### Registrando a conclusão de um hábito
+
+![Criação de registro diário](docs/post-daily-logs.png.png)
+
+### Bloqueio de duplicidade
+
+![Erro 409 - duplicidade](docs/post-daily-logs_error409.png.png)
+
+### Tratamento de recurso não encontrado
+
+![Erro 404 - não encontrado](docs/post-habits_error404.png.png)
