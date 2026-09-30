@@ -30,6 +30,11 @@ public class DailyLogController {
         return dailyLogService.findAll();
     }
 
+    @GetMapping("/{id}")
+    public DailyLog findById(@PathVariable Long id) {
+        return dailyLogService.findById(id);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public DailyLog create(@RequestBody DailyLog dailyLog) {
