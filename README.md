@@ -38,6 +38,22 @@ Camada que concentra as regras de negócio da aplicação, atuando como intermed
 
 Camada responsável por expor os endpoints REST e lidar cogm as requisições HTTP, implementando o CRUD completo (criação, leitura, atualização e remoção) para cada entidade. Recebe os dados da requisição, repassa ao Service para processamento e devolve a resposta ao cliente, com o código de status HTTP apropriado. Erros lançados pelo Service são interceptados pela camada de exceções (GlobalExceptionHandler), que os converte em respostas padronizadas (como 404 e 409), sem expor detalhes internos do sistema.
 
+#
+## Modelagem do banco de dados
+
+**habit**
+- id (PK)
+- name
+- category
+- description
+- reason
+
+**daily_log**
+- id (PK)
+- date
+- completed
+- habit_id (FK → habit.id)
+
 ## Endpoints da API
 
 ### Habit
