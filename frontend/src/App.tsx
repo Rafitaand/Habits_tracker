@@ -16,6 +16,7 @@ export default function App() {
   const [reason, setReason] = useState('')
   const [editingId, setEditingId] = useState<number | null>(null)
   const [erro, setErro] = useState('')
+
   useEffect(() => {
     fetch('http://localhost:8080/habits')
       .then((response) => response.json())
@@ -44,12 +45,12 @@ export default function App() {
       .then((response) => {
         if (response.ok) {
           setHabits(habits.filter((habit) => habit.id !== id))
-          return                                         // NOVO
+          return
         }
-        if (response.status === 409) {                   // NOVO
-          response.text().then((mensagem) => setErro(mensagem))  // NOVO
-        } else {                                         // NOVO
-          setErro('Não foi possível apagar o hábito. Tente novamente.')  // NOVO
+        if (response.status === 409) {
+          response.text().then((mensagem) => setErro(mensagem))
+        } else {
+          setErro('Não foi possível apagar o hábito. Tente novamente.')
         }
       })
   }
@@ -81,6 +82,14 @@ export default function App() {
         setDescription('')
         setReason('')
       })
+  }
+
+  function cancelarEdicao() {
+    setEditingId(null)
+    setName('')
+    setCategory('')
+    setDescription('')
+    setReason('')
   }
 
   return (
@@ -115,6 +124,8 @@ export default function App() {
       ) : (
         <button onClick={salvarEdicao}>Salvar</button>
       )}
+
+      {editingId !== null && <button onClick={cancelarEdicao}>Cancelar</button>}
 
       {erro && <p>{erro}</p>}
 
