@@ -7,6 +7,8 @@ Realizar uma rotina organizada, visualizando progressos diários.
 - Java
 - PostgreSQL
 - Spring Boot
+- React
+- TypeScript
 
 ## Funcionalidades
 
@@ -16,7 +18,8 @@ Realizar uma rotina organizada, visualizando progressos diários.
 
 ## Próximos passos
 
-- Desenvolver front-end em Angular para consumir a API
+- Registro diário de hábitos no front-end
+- Edição de hábitos no front-end
 
 ## Arquitetura
 
@@ -91,6 +94,16 @@ Camada responsável por expor os endpoints REST e lidar cogm as requisições HT
 4. No novo arquivo, ajuste usuário e senha de acordo com sua configuração local do PostgreSQL
 5. Execute o projeto com `./mvnw spring-boot:run`
 
+### Front-end
+
+Com o back-end rodando, abra outro terminal e execute:
+
+1. Entre na pasta do front: `cd frontend`
+2. Instale as dependências: `npm install`
+3. Inicie o servidor: `npm run dev`
+4. Acesse `http://localhost:5173`
+
+> **Obs:** o front precisa rodar na porta `5173`, sendo a origem liberada no CORS do back-end.
 
 ## Testes
 
