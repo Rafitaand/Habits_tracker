@@ -7,4 +7,6 @@ import com.rafaella.habit_tracker.model.DailyLog;
 
 public interface DailyLogRepository extends JpaRepository<DailyLog, Long> {
     Optional<DailyLog> findByHabitIdAndDate(Long habitId, LocalDate date);
+
+    boolean existsByHabitId(Long habitId);
 }
