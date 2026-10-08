@@ -14,7 +14,8 @@ export default function App() {
   const [category, setCategory] = useState('')
   const [description, setDescription] = useState('')
   const [reason, setReason] = useState('')
-
+  const [editingId, setEditingId] = useState<number | null>(null)
+  const [erro, setErro] = useState('')
   useEffect(() => {
     fetch('http://localhost:8080/habits')
       .then((response) => response.json())
@@ -38,17 +39,55 @@ export default function App() {
   }
 
   function apagar(id: number) {
+    setErro('')
     fetch(`http://localhost:8080/habits/${id}`, { method: 'DELETE' })
       .then((response) => {
         if (response.ok) {
           setHabits(habits.filter((habit) => habit.id !== id))
+          return                                         // NOVO
         }
+        if (response.status === 409) {                   // NOVO
+          response.text().then((mensagem) => setErro(mensagem))  // NOVO
+        } else {                                         // NOVO
+          setErro('Não foi possível apagar o hábito. Tente novamente.')  // NOVO
+        }
+      })
+  }
+
+  function editar(habit: Habit) {
+    setEditingId(habit.id)
+    setName(habit.name)
+    setCategory(habit.category)
+    setDescription(habit.description ?? '')
+    setReason(habit.reason ?? '')
+  }
+
+  function salvarEdicao() {
+    fetch(`http://localhost:8080/habits/${editingId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, category, description, reason }),
+    })
+      .then((response) => response.json())
+      .then((habitAtualizado) => {
+        setHabits(
+          habits.map((habit) =>
+            habit.id === habitAtualizado.id ? habitAtualizado : habit
+          )
+        )
+        setEditingId(null)
+        setName('')
+        setCategory('')
+        setDescription('')
+        setReason('')
       })
   }
 
   return (
     <div>
       <h1>Meus hábitos</h1>
+
+      {editingId !== null && <p>Editando o hábito número {editingId}</p>}
 
       <input
         value={name}
@@ -70,12 +109,20 @@ export default function App() {
         onChange={(e) => setReason(e.target.value)}
         placeholder="Motivo (opcional)"
       />
-      <button onClick={adicionar}>Adicionar</button>
+
+      {editingId === null ? (
+        <button onClick={adicionar}>Adicionar</button>
+      ) : (
+        <button onClick={salvarEdicao}>Salvar</button>
+      )}
+
+      {erro && <p>{erro}</p>}
 
       <ul>
         {habits.map((habit) => (
           <li key={habit.id}>
             {habit.name} - {habit.category}
+            <button onClick={() => editar(habit)}>Editar</button>
             <button onClick={() => apagar(habit.id)}>Apagar</button>
           </li>
         ))}
