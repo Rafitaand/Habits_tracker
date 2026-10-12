@@ -9,4 +9,5 @@ public interface DailyLogRepository extends JpaRepository<DailyLog, Long> {
     Optional<DailyLog> findByHabitIdAndDate(Long habitId, LocalDate date);
 
     boolean existsByHabitId(Long habitId);
+    void deleteByHabitId(Long habitId);
 }
