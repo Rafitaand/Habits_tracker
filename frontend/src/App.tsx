@@ -27,12 +27,17 @@ export default function App() {
     setReason('')
   }
 
-  function adicionar() {
+  function formularioValido() {
     if (name.trim() === '' || category.trim() === '') {
       setErro('Preencha o nome e a categoria do hábito.')
-      return
+      return false
     }
     setErro('')
+    return true
+  }
+
+  function adicionar() {
+    if (!formularioValido()) return
     criarHabito({ name, category, description, reason })
       .then((response) => response.json())
       .then((novoHabito) => {
@@ -67,6 +72,7 @@ export default function App() {
 
   function salvarEdicao() {
     if (editingId === null) return
+    if (!formularioValido()) return
     atualizarHabito(editingId, { name, category, description, reason })
       .then((response) => response.json())
       .then((habitAtualizado) => {
