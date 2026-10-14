@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
 
 import com.rafaella.habit_tracker.model.Habit;
 import com.rafaella.habit_tracker.service.HabitService;
@@ -41,12 +42,12 @@ public class HabitController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Habit create(@RequestBody Habit habit) {
+    public Habit create(@Valid @RequestBody Habit habit) {
         return habitService.save(habit);
     }
 
     @PutMapping("/{id}")
-    public Habit update(@PathVariable Long id, @RequestBody Habit habit) {
+    public Habit update(@PathVariable Long id, @Valid @RequestBody Habit habit) {
         habitService.findById(id);
         habit.setId(id);
         return habitService.save(habit);

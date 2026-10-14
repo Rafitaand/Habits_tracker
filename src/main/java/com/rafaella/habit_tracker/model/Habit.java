@@ -3,6 +3,7 @@ package com.rafaella.habit_tracker.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,8 +17,11 @@ public class Habit {
     @GeneratedValue (strategy = GenerationType.IDENTITY) //declarei responsabilidade do bd
     private Long id; //colocando Long por padrão de segurança
 
+    @NotBlank(message = "O nome é obrigatório")
     private String name;
+    @NotBlank(message = "A categoria é obrigatória")
     private String category;
+    
     private String reason;
     private String description;
 
