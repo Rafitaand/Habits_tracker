@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { hoje, formatarData } from './datas'
 import { buscarHabitos, buscarRegistros, criarHabito, atualizarHabito, apagarHabito, criarRegistro, apagarRegistro } from './api'
-import HabitForm from './components/HabitForm'
 import HabitItem from './components/HabitItem'
 import type { Habit, DailyLog } from './types'
 
@@ -14,6 +13,7 @@ export default function App() {
   const [editingId, setEditingId] = useState<number | null>(null)
   const [erro, setErro] = useState('')
   const [dailyLogs, setDailyLogs] = useState<DailyLog[]>([])
+  const [dataSelecionada, setDataSelecionada] = useState(hoje())
 
   useEffect(() => {
     buscarHabitos().then((data) => setHabits(data))
@@ -28,6 +28,11 @@ export default function App() {
   }
 
   function adicionar() {
+    if (name.trim() === '' || category.trim() === '') {
+      setErro('Preencha o nome e a categoria do hábito.')
+      return
+    }
+    setErro('')
     criarHabito({ name, category, description, reason })
       .then((response) => response.json())
       .then((novoHabito) => {
@@ -80,15 +85,15 @@ export default function App() {
     limparFormulario()
   }
 
-  function registroDeHoje(habitId: number) {
+  function registroDoDia(habitId: number) {
     return dailyLogs.find(
-      (log) => log.habit.id === habitId && log.date === hoje()
+      (log) => log.habit.id === habitId && log.date === dataSelecionada
     )
   }
 
-  function marcarHoje(habitId: number) {
+  function marcarDia(habitId: number) {
     setErro('')
-    criarRegistro(habitId, hoje()).then((response) => {
+    criarRegistro(habitId, dataSelecionada).then((response) => {
       if (response.ok) {
         response.json().then((novoLog) => setDailyLogs([...dailyLogs, novoLog]))
         return
@@ -101,7 +106,7 @@ export default function App() {
     })
   }
 
-  function desmarcarHoje(registro: DailyLog) {
+  function desmarcarDia(registro: DailyLog) {
     setErro('')
     apagarRegistro(registro.id).then((response) => {
       if (response.ok) {
@@ -112,12 +117,12 @@ export default function App() {
     })
   }
 
-  function alternarHoje(habitId: number) {
-    const registro = registroDeHoje(habitId)
+  function alternarDia(habitId: number) {
+    const registro = registroDoDia(habitId)
     if (registro) {
-      desmarcarHoje(registro)
+      desmarcarDia(registro)
     } else {
-      marcarHoje(habitId)
+      marcarDia(habitId)
     }
   }
 
@@ -125,22 +130,51 @@ export default function App() {
     <div>
       <h1>Meus hábitos</h1>
 
-      <p>{formatarData(hoje())}</p>
+      <p>{formatarData(dataSelecionada)}</p>
 
-      <HabitForm
-        name={name}
-        category={category}
-        description={description}
-        reason={reason}
-        editingId={editingId}
-        onNameChange={setName}
-        onCategoryChange={setCategory}
-        onDescriptionChange={setDescription}
-        onReasonChange={setReason}
-        onAdicionar={adicionar}
-        onSalvar={salvarEdicao}
-        onCancelar={cancelarEdicao}
+      <label>
+        Dia: <input
+          type="date"
+          value={dataSelecionada}
+          max={hoje()}
+          onChange={(e) => {
+            if (e.target.value && e.target.value <= hoje()) {
+              setDataSelecionada(e.target.value)
+            }
+          }}
+        />
+      </label>
+
+      {editingId !== null && <p>Editando o hábito número {editingId}</p>}
+
+      <input
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        placeholder="Nome do hábito"
       />
+      <input
+        value={category}
+        onChange={(e) => setCategory(e.target.value)}
+        placeholder="Categoria"
+      />
+      <input
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+        placeholder="Descrição (opcional)"
+      />
+      <input
+        value={reason}
+        onChange={(e) => setReason(e.target.value)}
+        placeholder="Motivo (opcional)"
+      />
+
+      {editingId === null ? (
+        <button onClick={adicionar}>Adicionar</button>
+      ) : (
+        <button onClick={salvarEdicao}>Salvar</button>
+      )}
+
+      {editingId !== null && <button onClick={cancelarEdicao}>Cancelar</button>}
 
       {erro && <p>{erro}</p>}
 
@@ -149,8 +183,8 @@ export default function App() {
           <HabitItem
             key={habit.id}
             habit={habit}
-            feito={registroDeHoje(habit.id) !== undefined}
-            onAlternar={() => alternarHoje(habit.id)}
+            feito={registroDoDia(habit.id) !== undefined}
+            onAlternar={() => alternarDia(habit.id)}
             onEditar={() => editar(habit)}
             onApagar={() => apagar(habit.id)}
           />
