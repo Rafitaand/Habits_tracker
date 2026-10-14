@@ -37,6 +37,7 @@ export default function App() {
   }
 
   function apagar(id: number) {
+    if (!window.confirm('Apagar este hábito e todos os registros dele?')) return
     setErro('')
     apagarHabito(id).then((response) => {
       if (response.ok) {

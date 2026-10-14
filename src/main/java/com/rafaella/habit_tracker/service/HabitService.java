@@ -3,10 +3,12 @@ package com.rafaella.habit_tracker.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.rafaella.habit_tracker.model.Habit;
 import com.rafaella.habit_tracker.repository.DailyLogRepository;
 import com.rafaella.habit_tracker.repository.HabitRepository;
+
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
@@ -33,10 +35,9 @@ public class HabitService {
         return habitRepository.save(habit);
     }
 
+    @Transactional
     public void delete(Long id) {
-        if (dailyLogRepository.existsByHabitId(id)) {
-            throw new IllegalStateException("Este hábito possui registros diários e não pode ser apagado");
-        }
+        dailyLogRepository.deleteByHabitId(id);
         habitRepository.deleteById(id);
     }
 }
