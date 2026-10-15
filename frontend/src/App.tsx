@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { hoje, formatarData } from './datas'
+import { hoje } from './datas'
 import { buscarHabitos, buscarRegistros, criarHabito, atualizarHabito, apagarHabito, criarRegistro, apagarRegistro } from './api'
 import HabitItem from './components/HabitItem'
 import type { Habit, DailyLog } from './types'
@@ -135,11 +135,10 @@ export default function App() {
   return (
     <div className="app">
       <h1>Habit Tracker</h1>
-      <p className="subtitulo"> Cadastre seus hábitos <br/>
+      <p className="subtitulo"> Cadastre seus hábitos. <br/>
       Mantenha sua rotina organizada.
       </p>
       
-      <p className="data">{formatarData(dataSelecionada)}</p>
 
       <label className="dia">
         Dia:
@@ -158,7 +157,7 @@ export default function App() {
 
       <div className="formulario">
         {editingId !== null && (
-          <p className="editando">Editando o hábito número {editingId}</p>
+          <p className="editando">Editando o hábito </p>
         )}
 
         <input
