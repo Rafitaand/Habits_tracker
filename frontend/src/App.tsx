@@ -136,7 +136,7 @@ export default function App() {
     <div className="app">
       <h1>Habit Tracker</h1>
       <p className="subtitulo"> Cadastre seus hábitos <br/>
-      Mantenha sua rotinha organizada.
+      Mantenha sua rotina organizada.
       </p>
       
       <p className="data">{formatarData(dataSelecionada)}</p>
