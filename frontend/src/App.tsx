@@ -133,13 +133,17 @@ export default function App() {
   }
 
   return (
-    <div>
-      <h1>Meus hábitos</h1>
+    <div className="app">
+      <h1>Habit Tracker</h1>
+      <p className="subtitulo"> Cadastre seus hábitos <br/>
+      Mantenha sua rotinha organizada.
+      </p>
+      
+      <p className="data">{formatarData(dataSelecionada)}</p>
 
-      <p>{formatarData(dataSelecionada)}</p>
-
-      <label>
-        Dia: <input
+      <label className="dia">
+        Dia:
+        <input
           type="date"
           value={dataSelecionada}
           max={hoje()}
@@ -151,40 +155,47 @@ export default function App() {
         />
       </label>
 
-      {editingId !== null && <p>Editando o hábito número {editingId}</p>}
 
-      <input
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder="Nome do hábito"
-      />
-      <input
-        value={category}
-        onChange={(e) => setCategory(e.target.value)}
-        placeholder="Categoria"
-      />
-      <input
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        placeholder="Descrição (opcional)"
-      />
-      <input
-        value={reason}
-        onChange={(e) => setReason(e.target.value)}
-        placeholder="Motivo (opcional)"
-      />
+      <div className="formulario">
+        {editingId !== null && (
+          <p className="editando">Editando o hábito número {editingId}</p>
+        )}
 
-      {editingId === null ? (
-        <button onClick={adicionar}>Adicionar</button>
-      ) : (
-        <button onClick={salvarEdicao}>Salvar</button>
-      )}
+        <input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Nome do hábito"
+        />
+        <input
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          placeholder="Categoria"
+        />
+        <input
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Descrição (opcional)"
+        />
+        <input
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
+          placeholder="Motivo (opcional)"
+        />
 
-      {editingId !== null && <button onClick={cancelarEdicao}>Cancelar</button>}
+        <div className="botoes">
+          {editingId === null ? (
+            <button className="primario" onClick={adicionar}>Adicionar</button>
+          ) : (
+            <button className="primario" onClick={salvarEdicao}>Salvar</button>
+          )}
 
-      {erro && <p>{erro}</p>}
+          {editingId !== null && <button onClick={cancelarEdicao}>Cancelar</button>}
+        </div>
+      </div>
 
-      <ul>
+      {erro && <p className="erro">{erro}</p>}
+
+      <ul className="lista">
         {habits.map((habit) => (
           <HabitItem
             key={habit.id}

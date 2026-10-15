@@ -1,0 +1,187 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: #faf7ff;
+  color: #1f1235;
+  color-scheme: light;
+}
+
+.app {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 32px 16px;
+}
+
+h1 {
+  color: #6b21a8;
+  margin: 0 0 4px;
+}
+
+.data {
+  margin: 0 0 20px;
+  color: #6b5b82;
+}
+
+.dia {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+input:not([type='checkbox']) {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e4d7f5;
+  border-radius: 8px;
+  background: white;
+  font: inherit;
+  color: #1f1235;
+}
+
+input:not([type='checkbox']):focus {
+  outline: 2px solid #e360ff;
+  outline-offset: 1px;
+}
+
+.dia input {
+  width: auto;
+}
+
+button {
+  padding: 8px 14px;
+  border: 1px solid #6b21a8;
+  border-radius: 8px;
+  background: white;
+  color: #6b21a8;
+  font: inherit;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #f3e8ff;
+}
+
+button.primario {
+  background: #6b21a8;
+  color: white;
+}
+
+button.primario:hover {
+  background: #581c87;
+}
+
+button.perigo {
+  border-color: #b91c1c;
+  color: #b91c1c;
+}
+
+button.perigo:hover {
+  background: #fee2e2;
+}
+
+.formulario {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 16px;
+  margin-bottom: 20px;
+  background: white;
+  border: 1px solid #e4d7f5;
+  border-radius: 12px;
+}
+
+.editando {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #6b21a8;
+  font-weight: 600;
+}
+
+.botoes {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 8px;
+}
+
+.erro {
+  margin: 0 0 16px;
+  padding: 10px 12px;
+  color: #b91c1c;
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+}
+
+.lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.habito {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: white;
+  border: 1px solid #e4d7f5;
+  border-radius: 12px;
+}
+
+.habito input[type='checkbox'] {
+  width: 20px;
+  height: 20px;
+  accent-color: #6b21a8;
+}
+
+.nome {
+  font-weight: 600;
+}
+
+.info {
+  flex: 1;
+}
+
+.titulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.detalhe {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+  color: #6b5b82;
+}
+
+.categoria {
+  padding: 2px 10px;
+  font-size: 0.8rem;
+  color: #6b21a8;
+  background: #f3e8ff;
+  border-radius: 999px;
+}
+
+.acoes {
+  display: flex;
+  gap: 6px;
+}
+
+@media (max-width: 480px) {
+  .formulario {
+    grid-template-columns: 1fr;
+  }
+
+  .habito {
+    flex-wrap: wrap;
+  }
+  
+} 
