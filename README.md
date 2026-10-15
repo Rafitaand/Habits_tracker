@@ -1,29 +1,43 @@
-# Habit Tracker API
+# Habit Tracker
 
-Realizar uma rotina organizada, visualizando progressos diários.
+Aplicação para realizar o cadastro de hábitos diários e registrar aquilo que foi feito.
 
 ## Tecnologias
 
 - Java
 - PostgreSQL
 - Spring Boot
-- React
+- Swagger (springdoc)
+- React (ferramenta: Vite)
 - TypeScript
+- CSS
 
 ## Funcionalidades
 
-- Cadastro, edição e remoção de hábitos
-- Registro diário de conclusão de hábitos, com edição e remoção
-- Bloqueio de registros duplicados para o mesmo hábito na mesma data
+- Cadastro, edição e remoção de hábitos, com descrição e motivo opcionais.
+- Marcação e desmarcação de um hábito pelo checkbox, no dia escolhido no calendário.
+- Bloqueio de registros duplicados para o mesmo hábito na mesma data.
+- Remoção de um hábito junto com os registros dele, com confirmação antes.
+- Validação de nome e categoria no front-end e no back-end.
+- Mensagens de erro na tela, caso o back-end recuse alguma informação enviada pelo front-end.
 
-## Próximos passos
+## Demonstração
 
-- Registro diário de hábitos no front-end
-- Edição de hábitos no front-end
+### Tela principal
+
+![Tela principal do Habit Tracker](docs/habit-tela-principal.png)
+
+### Editando um hábito
+
+![Edição de um hábito](docs/habit-edicao.png)
+
+### Validação do formulário
+
+![Aviso quando falta o nome ou a categoria](docs/habit-validacao.png)
 
 ## Arquitetura
 
-Projeto traz um modelo de arquitetura em camadas, realizando por partes, para que seja feita a conexão de forma correta. Sendo assim, tornando um API prática e organizada.
+O projeto tem três partes: um banco de dados PostgreSQL, que guarda os hábitos e os registros diários; uma API REST em Java com Spring Boot; e um front-end em React, que consome essa API. O back-end segue uma arquitetura em camadas (Model, Repository, Service e Controller), em que cada camada tem uma responsabilidade.
 
 ### Model
 
@@ -37,11 +51,24 @@ Camada composta por interfaces que estendem JpaRepository, declarando os método
 
 Camada que concentra as regras de negócio da aplicação, atuando como intermediária entre Controller e Repository. É nela que ficam implementadas validações específicas do domínio — como a checagem de existência de um hábito antes de uma atualização, e o bloqueio de registros duplicados para o mesmo hábito na mesma data. Quando uma regra é violada, o Service lança uma exceção, que é tratada pela camada de exceções antes de retornar ao Controller.
 
+Ao apagar um hábito, o Service remove também os registros diários dele, na mesma transação (@Transactional): ou tudo é apagado, ou nada é. Assim, nenhum registro fica sem hábito.
+
 ### Controller
 
-Camada responsável por expor os endpoints REST e lidar cogm as requisições HTTP, implementando o CRUD completo (criação, leitura, atualização e remoção) para cada entidade. Recebe os dados da requisição, repassa ao Service para processamento e devolve a resposta ao cliente, com o código de status HTTP apropriado. Erros lançados pelo Service são interceptados pela camada de exceções (GlobalExceptionHandler), que os converte em respostas padronizadas (como 404 e 409), sem expor detalhes internos do sistema.
+Camada responsável por expor os endpoints REST e lidar com as requisições HTTP, implementando o CRUD completo (criação, leitura, atualização e remoção) para cada entidade. Recebe os dados da requisição, valida o hábito recebido (@Valid, com @NotBlank no nome e na categoria) e repassa ao Service para processamento, devolvendo a resposta ao cliente com o código de status HTTP apropriado.
 
-#
+Erros lançados pelo Service são interceptados pela camada de exceções (GlobalExceptionHandler), que os converte em respostas padronizadas (como 404 e 409), sem expor detalhes internos do sistema. Quando falta o nome ou a categoria de um hábito, o Spring responde com 400 antes de a requisição chegar ao Service.
+
+### Organização do front-end
+
+O front-end fica na pasta `frontend` e é dividido em arquivos, cada um com uma responsabilidade:
+
+- `App.tsx`: guarda o estado da tela e decide o que fazer a cada ação.
+- `api.ts`: concentra as chamadas ao back-end.
+- `datas.ts`: funções de data (o dia de hoje e a formatação).
+- `types.ts`: descreve o formato dos dados (`Habit` e `DailyLog`).
+- `components/HabitItem.tsx`: desenha a linha de cada hábito na lista.
+
 ## Modelagem do banco de dados
 
 **habit**
@@ -59,19 +86,25 @@ Camada responsável por expor os endpoints REST e lidar cogm as requisições HT
 
 ## Endpoints da API
 
+Com o back-end rodando, a documentação interativa fica em `http://localhost:8080/swagger-ui/index.html`.
+
+![Lista de endpoints no Swagger](docs/swagger-endpoints.png)
+
+![GET /habits executado no Swagger](docs/swagger-get-habits.png)
+
 ### Habit
 
 - GET /habits - lista todos os hábitos.
 - GET /habits/{id} - busca hábito específico.
-- POST /habits  - cria um novo hábito.
-- PUT /habits/{id} - atualiza um hábito existente.
-- DELETE /habits/{id} - deleta um hábito específico.
+- POST /habits - cria um novo hábito. Responde 400 se faltar nome ou categoria.
+- PUT /habits/{id} - atualiza um hábito existente. Responde 400 se faltar nome ou categoria.
+- DELETE /habits/{id} - deleta um hábito específico e os registros diários dele.
 
 ### DailyLog
 
 - GET /daily-logs - lista todos os registros diários.
 - GET /daily-logs/{id} - busca um registro específico.
-- POST /daily-logs  - cria um novo registro.
+- POST /daily-logs - cria um novo registro.
 - PUT /daily-logs/{id} - atualiza um registro existente.
 - DELETE /daily-logs/{id} - deleta um registro.
 
@@ -82,8 +115,9 @@ Camada responsável por expor os endpoints REST e lidar cogm as requisições HT
 - Java (versão 17)
 - Maven
 - PostgreSQL
+- Node.js
 
-### Passos
+### Back-end
 
 1. Clone o repositório
 2. Crie um banco de dados PostgreSQL chamado `habits_tracker`
@@ -96,16 +130,16 @@ Camada responsável por expor os endpoints REST e lidar cogm as requisições HT
 
 ### Front-end
 
-Com o back-end rodando, abra outro terminal e execute:
+Com o back-end e o banco de dados rodando, abra outro terminal e execute:
 
 1. Entre na pasta do front: `cd frontend`
 2. Instale as dependências: `npm install`
 3. Inicie o servidor: `npm run dev`
 4. Acesse `http://localhost:5173`
 
-> **Obs:** o front precisa rodar na porta `5173`, sendo a origem liberada no CORS do back-end.
+> **Obs:** o front precisa rodar na porta `5173`, que é a origem liberada no CORS do back-end.
 
-## Testes
+## Testes da API (Postman)
 
 ### Criando um hábito
 
@@ -131,3 +165,9 @@ Com o back-end rodando, abra outro terminal e execute:
 ### Tratamento de recurso não encontrado
 
 ![Erro 404 - não encontrado](docs/post-habits_error404.png.png)
+
+## Próximos passos
+
+- Sequência de dias seguidos.
+- Visão da semana, numa grade.
+- Login e mais de um usuário.
